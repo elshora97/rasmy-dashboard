@@ -1,0 +1,10 @@
+{
+  "name": "rasmy-rental",
+  "version": "1.0.0",
+  "description": "Property rental availability platform",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "api"
+  ]
+}
