@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "id": "prop-1",
+      "name": "Studio Apartment - Downtown",
+      "dailyPrice": 85,
+      "imageUrl": "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop",
+      "bookings": [
+        {
+          "startDate": "2026-05-25",
+          "endDate": "2026-05-27"
+        }
+      ]
+    },
+    {
+      "id": "prop-2",
+      "name": "2-Bedroom House - Suburbs",
+      "dailyPrice": 120,
+      "imageUrl": "https://images.unsplash.com/photo-1570129477492-45324003-d19f?w=400&h=300&fit=crop",
+      "bookings": []
+    }
+  ]
+}
