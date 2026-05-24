@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "frontend/build",
+  "buildCommand": "npm --prefix frontend run build && mkdir -p public && cp -r frontend/build/* public/",
+  "outputDirectory": "public",
   "installCommand": "npm install --legacy-peer-deps",
   "env": {
     "NODE_ENV": "production"
