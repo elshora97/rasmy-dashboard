@@ -6,5 +6,8 @@
   "workspaces": [
     "frontend",
     "api"
-  ]
+  ],
+  "scripts": {
+    "build": "npm run build --prefix frontend"
+  }
 }
