@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { api } from '../api';
 
 export default function PropertyForm({ onPropertyAdded }) {
+const imageAdress = "https://imgs.search.brave.com/-otu7X_pe7MdGWAf0qR0RxBdzPudWmB4WjgBAJiP5EY/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/bmV3YXFhci5uZXQv/MjAyMi8wNC8lRDkl/ODIlRDglQjElRDkl/OEElRDglQTktJUQ4/JUE4JUQ5JThBJUQ4/JUE3JUQ5JTg2JUQ5/JTgzJUQ5JThBLSVE/OCVBNyVEOSU4NCVE/OCVCMyVEOCVBNyVE/OCVBRCVEOSU4NC0l/RDglQTclRDklODQl/RDglQjQlRDklODUl/RDglQTclRDklODQl/RDklOEEtQmlhbmNo/aS1Ob3J0aC1Db2Fz/dC53ZWJw"
   const [formData, setFormData] = useState({
     name: '',
     dailyPrice: '',
-    imageUrl: ''
+    imageUrl: imageAdress
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,7 @@ export default function PropertyForm({ onPropertyAdded }) {
       }
 
       await api.addProperty(formData.name, price, formData.imageUrl);
-      setFormData({ name: '', dailyPrice: '', imageUrl: '' });
+      setFormData({ name: '', dailyPrice: '', imageUrl: imageAdress });
       onPropertyAdded();
     } catch (err) {
       setError(err.message);
@@ -71,7 +72,7 @@ export default function PropertyForm({ onPropertyAdded }) {
         />
       </div>
 
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <label className="block text-sm font-semibold mb-2">Image URL</label>
         <input
           type="url"
@@ -81,7 +82,7 @@ export default function PropertyForm({ onPropertyAdded }) {
           placeholder="https://example.com/image.jpg"
           className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-      </div>
+      </div> */}
 
       <button
         type="submit"

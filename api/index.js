@@ -1,3 +1,19 @@
+/*
+  REFERENCE FILE - For local development only
+
+  For production deployment on Vercel, the API uses serverless functions:
+  - api/properties.js - GET/POST all properties
+  - api/properties/[id].js - GET/DELETE individual property
+  - api/properties/[id]/bookings.js - GET/POST bookings
+  - api/health.js - Health check
+
+  To test locally with Vercel serverless functions, run:
+    npm install -g vercel
+    vercel dev
+
+  Or use this Express server for quick testing:
+*/
+
 import express from 'express';
 import cors from 'cors';
 import fs from 'fs';
@@ -13,7 +29,6 @@ const DATA_FILE = path.join(__dirname, 'data.json');
 app.use(cors());
 app.use(express.json());
 
-// Load data from file
 function loadData() {
   try {
     const data = fs.readFileSync(DATA_FILE, 'utf-8');
@@ -24,7 +39,6 @@ function loadData() {
   }
 }
 
-// Save data to file
 function saveData(data) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
@@ -33,28 +47,20 @@ function saveData(data) {
   }
 }
 
-// Helper: Generate simple ID
 function generateId() {
   return 'prop-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 }
 
-// GET /api/properties - Get all properties
 app.get('/api/properties', (req, res) => {
   const data = loadData();
   res.json({ properties: data.properties });
 });
 
-// POST /api/properties - Create new property
 app.post('/api/properties', (req, res) => {
   const { name, dailyPrice, imageUrl } = req.body;
 
-  // Validation
-  if (!name || dailyPrice === undefined || !imageUrl) {
-    return res.status(400).json({ error: 'Missing required fields: name, dailyPrice, imageUrl' });
-  }
-
-  if (typeof dailyPrice !== 'number' || dailyPrice <= 0) {
-    return res.status(400).json({ error: 'dailyPrice must be a positive number' });
+  if (!name || dailyPrice === undefined) {
+    return res.status(400).json({ error: 'Missing required fields: name, dailyPrice' });
   }
 
   const data = loadData();
@@ -62,7 +68,7 @@ app.post('/api/properties', (req, res) => {
     id: generateId(),
     name: name.trim(),
     dailyPrice,
-    imageUrl: imageUrl.trim(),
+    imageUrl: imageUrl || '',
     bookings: []
   };
 
@@ -72,7 +78,6 @@ app.post('/api/properties', (req, res) => {
   res.status(201).json(newProperty);
 });
 
-// GET /api/properties/:id/bookings - Get bookings for a property
 app.get('/api/properties/:id/bookings', (req, res) => {
   const { id } = req.params;
   const data = loadData();
@@ -85,12 +90,10 @@ app.get('/api/properties/:id/bookings', (req, res) => {
   res.json({ bookings: property.bookings });
 });
 
-// POST /api/properties/:id/bookings - Add booking to a property
 app.post('/api/properties/:id/bookings', (req, res) => {
   const { id } = req.params;
   const { startDate, endDate } = req.body;
 
-  // Validation
   if (!startDate || !endDate) {
     return res.status(400).json({ error: 'Missing required fields: startDate, endDate' });
   }
@@ -113,23 +116,32 @@ app.post('/api/properties/:id/bookings', (req, res) => {
     return res.status(404).json({ error: 'Property not found' });
   }
 
-  const newBooking = {
-    startDate: startDate.trim(),
-    endDate: endDate.trim()
-  };
-
+  const newBooking = { startDate: startDate.trim(), endDate: endDate.trim() };
   property.bookings.push(newBooking);
   saveData(data);
 
   res.status(201).json({ bookings: property.bookings });
 });
 
-// Health check
+app.delete('/api/properties/:id', (req, res) => {
+  const { id } = req.params;
+  const data = loadData();
+  const propertyIndex = data.properties.findIndex(p => p.id === id);
+
+  if (propertyIndex === -1) {
+    return res.status(404).json({ error: 'Property not found' });
+  }
+
+  data.properties.splice(propertyIndex, 1);
+  saveData(data);
+
+  res.status(200).json({ message: 'Property deleted successfully' });
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

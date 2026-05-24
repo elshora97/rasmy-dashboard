@@ -30,6 +30,17 @@ export default function Admin() {
     loadProperties();
   };
 
+  const handleDeleteProperty = async (propertyId, propertyName) => {
+    if (window.confirm(`Are you sure you want to delete "${propertyName}"? This cannot be undone.`)) {
+      try {
+        await api.deleteProperty(propertyId);
+        loadProperties();
+      } catch (error) {
+        alert('Failed to delete property: ' + error.message);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-4xl mx-auto">
@@ -61,18 +72,26 @@ export default function Admin() {
           {!loading && properties.length > 0 && (
             <div className="space-y-4">
               {properties.map(property => (
-                <div key={property.id} className="border-l-4 border-blue-500 pl-4 py-2">
-                  <h3 className="font-bold text-lg">{property.name}</h3>
-                  <p className="text-gray-600">${property.dailyPrice}/night</p>
-                  <p className="text-sm text-gray-500">
-                    Bookings: {property.bookings.length}
-                    {property.bookings.length > 0 && (
-                      <span>
-                        {' '}
-                        ({property.bookings.map(b => `${b.startDate} to ${b.endDate}`).join(', ')})
-                      </span>
-                    )}
-                  </p>
+                <div key={property.id} className="border-l-4 border-blue-500 pl-4 py-2 flex justify-between items-start">
+                  <div>
+                    <h3 className="font-bold text-lg">{property.name}</h3>
+                    <p className="text-gray-600">${property.dailyPrice}/night</p>
+                    <p className="text-sm text-gray-500">
+                      Bookings: {property.bookings.length}
+                      {property.bookings.length > 0 && (
+                        <span>
+                          {' '}
+                          ({property.bookings.map(b => `${b.startDate} to ${b.endDate}`).join(', ')})
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteProperty(property.id, property.name)}
+                    className="px-3 py-1 bg-red-600 text-white text-sm font-semibold rounded hover:bg-red-700 transition"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
             </div>

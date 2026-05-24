@@ -18,6 +18,15 @@ export const api = {
     return response.json();
   },
 
+  async deleteProperty(propertyId) {
+    const response = await fetch(`${API_BASE}/properties/${propertyId}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!response.ok) throw new Error('Failed to delete property');
+    return response.json();
+  },
+
   // Bookings
   async getBookings(propertyId) {
     const response = await fetch(`${API_BASE}/properties/${propertyId}/bookings`);
